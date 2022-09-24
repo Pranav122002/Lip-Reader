@@ -1,21 +1,21 @@
 import cv2
+import os
 import streamlit as st
 
 st.write("""
 #Lip Reader
 # """)
-uploaded_video = st.file_uploader("upload a file")
-# file = video_file.read()
-st.video(uploaded_video) 
 
 
+def save_uploadedfile(uploadedfile):
+    with open(os.path.join("tempDir", uploadedfile.name), "wb") as f:
+        f.write(uploadedfile.getbuffer())
 
-vidcap = cv2.VideoCapture(uploaded_video)
+    return st.success("Saved File:{} to tempDir".format(uploadedfile.name))
 
-success,image = vidcap.read('out.mp4')
-count = 0
-while success:
-  cv2.imwrite("frame%d.jpg" % count, image)     # save frame as JPEG file      
-  success,image = vidcap.read()
-  print('Read a new frame: ', success)
-  count += 1
+
+datafile = st.file_uploader("Upload file",type=[ 'mp4'])
+
+if datafile is not None:
+   file_details = {"FileName":datafile.name,"FileType":datafile.type}
+   save_uploadedfile(datafile)
